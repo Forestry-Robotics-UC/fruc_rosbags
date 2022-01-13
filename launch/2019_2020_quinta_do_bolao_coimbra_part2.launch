@@ -5,7 +5,7 @@
 
 	<!-- PLAY DATASET  -->
 	<node pkg="rosbag" type="play" name="rosbag_play" output="screen"
-		  args="--clock --skip-empty=2.0 -s 820 
+		  args="--clock --skip-empty=2.0 
 		  $(find fruc_rosbags)/rosbags/2019_11_15_semfire.bag 
 		  $(find fruc_rosbags)/rosbags/_2020-02-19-17-29-13.bag
 		  "/>
