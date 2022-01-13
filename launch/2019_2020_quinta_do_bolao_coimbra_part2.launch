@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<launch>
+	<!-- GLOBAL TIME PARAM FOR ROSBAG PLAY  -->
+	<param name="use_sim_time" value="true" />
+
+	<!-- PLAY DATASET  -->
+	<node pkg="rosbag" type="play" name="rosbag_play" output="screen"
+		  args="--clock --skip-empty=2.0 -s 820 
+		  $(find fruc_rosbags)/rosbags/2019_11_15_semfire.bag 
+		  $(find fruc_rosbags)/rosbags/_2020-02-19-17-29-13.bag
+		  "/>
+
+	<!-- GET THE LIDAR DATA INTO A FORMAT THAT RVIZ CAN SEE IT (POINTCLOUD)  -->
+	<node pkg="lslidar_c16_decoder" type="lslidar_c16_decoder_node" name="back_lslidar_c16_decoder_node"> <!--output="screen"-->
+	    <param name="child_frame_id" value="back_lslidar"/>
+	    <param name="point_num" value="2000"/>
+	    <param name="channel_num" value="8"/>
+	    <param name="angle_disable_min" value="0"/>
+	    <param name="angle_disable_max" value="0"/>
+	    <param name="min_range" value="0.15"/>
+	    <param name="max_range" value="150.0"/>
+	    <param name="frequency" value="10.0"/>
+	    <param name="publish_point_cloud" value="true"/>
+	    <param name="publish_channels" value="false"/>	<!--for now: no use for this-->
+	    <param name="use_gps_ts" value="false"/>
+
+	    <!--output topic remapping for the greater scheme of things -->
+	    <remap from="scan"           to="back_lslidar_scan"/>
+	    <remap from="scan_channel"   to="back_lslidar_scan_channel"/>
+	    <remap from="layer_num"      to="back_lslidar_layer_num"/>
+	    <remap from="lslidar_packet" to="back_lslidar_packet"/>
+	    <remap from="lslidar_sweep"  to="back_lslidar_sweep"/>
+	    <remap from="lslidar_point_cloud" to="back_lslidar_point_cloud"/>
+	</node>
+
+    <!-- GET THE LIDAR DATA INTO A FORMAT THAT RVIZ CAN SEE IT (POINTCLOUD)  -->
+	<node pkg="lslidar_c16_decoder" type="lslidar_c16_decoder_node" name="front_lslidar_c16_decoder_node"> <!--output="screen"-->
+	    <param name="child_frame_id" value="front_lslidar"/>
+	    <param name="point_num" value="2000"/>
+	    <param name="channel_num" value="8"/>
+	    <param name="angle_disable_min" value="0"/>
+	    <param name="angle_disable_max" value="0"/>
+	    <param name="min_range" value="0.15"/>
+	    <param name="max_range" value="150.0"/>
+	    <param name="frequency" value="10.0"/>
+	    <param name="publish_point_cloud" value="true"/>
+	    <param name="publish_channels" value="false"/>	<!--for now: no use for this-->
+	    <param name="use_gps_ts" value="false"/>
+
+	    <!--output topic remapping for the greater scheme of things -->
+	    <remap from="scan"           to="front_lslidar_scan"/>
+	    <remap from="scan_channel"   to="front_lslidar_scan_channel"/>
+	    <remap from="layer_num"      to="front_lslidar_layer_num"/>
+	    <remap from="lslidar_packet" to="front_lslidar_packet"/>  
+	    <remap from="lslidar_sweep"  to="front_lslidar_sweep"/>
+	    <remap from="lslidar_point_cloud" to="front_lslidar_point_cloud"/>	    
+	</node>
+
+	<!--display the bobcat (the dataset has an initial /tf_static with all the transforms -->
+	<include file="$(find fruc_rosbags)/launch/display_semfire_bobcat.launch"/>
+
+	<!-- Launch missing tfs for realsense and imu-->
+	<include file="$(find fruc_rosbags)/launch/static_tfs.launch"/>
+
+	<!-- launch rviz with custom profile-->
+	<node pkg="rviz" type="rviz" name="rviz" args="-d $(find fruc_rosbags)/rviz/2019_2020_quinta_do_bolao_coimbra_part2.rviz" output="screen"/>
+
+
+
+    <!-- Filter the robot structure on the back lslidar points with a "crop box" -->
+    <node pkg="nodelet" type="nodelet" name="pcl_manager" args="manager" output="screen" />
+
+    <node pkg="nodelet" type="nodelet" name="crop_box" args="load pcl/CropBox pcl_manager" output="screen">
+        <remap from="~input" to="back_lslidar_point_cloud" />
+        <remap from="~output" to="back_lslidar_point_cloud_filtered" />
+        <rosparam>
+              min_x: -2.5
+              max_x: 0.0
+              min_y: -1.0
+              max_y: 1.0
+              min_z: -1.25
+              max_z: 1.0
+              keep_organized: true
+              negative: true
+        </rosparam>
+     </node>
+     
+	<!--Intel RealSense Colored PointCloud-->
+
+	<!--republish compressed images into raw images readable by the point_cloud_xyzrgb nodelet-->
+	<node pkg="image_transport" type="republish" name="repub_image_rect_color" args="compressed in:=realsense/color/image_raw raw out:=realsense/color/image_raw"/>
+
+	<!-- Get RGBD registered Point Cloud from Intel -->
+	<node pkg="nodelet" type="nodelet" name="realsense_colored_pcl" args="manager" output="screen" /> 
+
+	<node pkg="nodelet" type="nodelet" name="points_xyzrgb" args="load depth_image_proc/point_cloud_xyzrgb realsense_colored_pcl --no-bond"> 
+		<remap from="rgb/camera_info" to="realsense/color/camera_info" />   
+		<remap from="rgb/image_rect_color" to="realsense/color/image_raw"/> 
+		<remap from="depth_registered/image_rect" to="realsense/aligned_depth_to_color/image_raw"/>
+		<remap from="depth_registered/points" to="realsense/depth/color/points"/>
+	</node>
+</launch>
+

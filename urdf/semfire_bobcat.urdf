@@ -1,0 +1,231 @@
+<?xml version="1.0"?>
+<robot name="semfire_bobcat">
+
+  <!-- Material Definitions -->
+  <material name="black">
+    <color rgba="0 0 0 1"/>
+  </material>
+
+  <material name="white">
+    <color rgba="1 1 1 1"/>
+  </material>
+
+  <!----------------------------------------------------- Bobcat ------------------------------------------------------------>
+
+  <link name="bobcat_base">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://semfire_bobcat/mesh/bobcat_2.dae" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://semfire_bobcat/mesh/bobcat_2.dae" scale="1 1 1"/>
+        <!-- Ask Daryna for the Convex Hull -->
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="arms_link">    <!--Ask Daryna to remove the red stick from the origin (later) -->
+    <visual>
+      <origin xyz="0 0.015 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://semfire_bobcat/mesh/arms_blender_2.dae" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0.015 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://semfire_bobcat/mesh/arms_blender_2.dae" scale="1 1 1"/>
+        <!-- Ask Daryna for the Convex Hull -->
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="back_bumper_link">
+    <visual>
+      <origin xyz="-0.085 -0.705 -0.17" rpy="1.57079632679 0 1.57079632679" />
+      <geometry>
+        <mesh filename="package://semfire_bobcat/mesh/Bumper V2.0.STL" scale="1 1 1"/>
+      </geometry>
+      <material name="black"/>
+      <!--coloring the STL-->
+    </visual>
+    <collision>
+      <origin xyz="-0.085 -0.705 -0.17" rpy="1.57079632679 0 1.57079632679" />
+      <geometry>
+        <mesh filename="package://semfire_bobcat/mesh/Bumper V2.0.STL" scale="1 1 1"/>
+        <!-- Ask Daryna for the Convex Hull -->
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="back_box_link">
+    <visual>
+      <origin xyz="-0.045 0.1 -0.09" rpy="0 0 -1.57079632679" />
+      <geometry>
+        <mesh filename="package://semfire_bobcat/mesh/back_box.STL" scale="1 1 1"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <collision>
+      <origin xyz="-0.045 0.1 -0.09" rpy="0 0 -1.57079632679" />
+      <geometry>
+        <mesh filename="package://semfire_bobcat/mesh/back_box.STL" scale="1 1 1"/>
+        <!-- Ask Daryna for the Convex Hull -->
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="sensor_box_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 1.57079632679" />
+      <geometry>
+        <mesh filename="package://semfire_bobcat/mesh/sensor_box.dae" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 1.57079632679" />
+      <geometry>
+        <mesh filename="package://semfire_bobcat/mesh/sensor_box.dae" scale="1 1 1"/>
+        <!-- Ask Daryna for the Convex Hull -->
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="base_sensing_kit">
+    <visual>
+      <origin xyz="0.0805 -0.001 -0.088" rpy="0.48 0 1.57079632679"/>
+      <!-- according to Miguel: 27.5-29 degrees (0.48-0.51 rads) in relation to the floor -->
+      <geometry>
+        <mesh filename="package://semfire_bobcat/mesh/base_sensor_kit_white.dae" scale="1 1 1"/>
+        <!--base_sensor_kit.dae (black)-->
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.0805 -0.001 -0.088" rpy="0.48 0 1.57079632679"/>
+      <geometry>
+        <mesh filename="package://semfire_bobcat/mesh/base_sensor_kit_white.dae" scale="1 1 1"/>
+        <!--base_sensor_kit.dae (black)-->
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="front_lslidar">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0.52 0" />
+      <!--NEW: the front lidar is now tilted 30º (0.52 rad)-->
+      <geometry>
+        <mesh filename="package://semfire_bobcat/mesh/lslidar.dae" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://semfire_bobcat/mesh/lslidar.dae" scale="1 1 1"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="back_lslidar">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://semfire_bobcat/mesh/lslidar.dae" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://semfire_bobcat/mesh/lslidar.dae" scale="1 1 1"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!--------------------------------------------------- Sensor Links (from top to bottom) ---------------------------------------------------------->
+  <link name="dalsa_link"/>
+  <link name="flir_ax8_link"/>
+  <link name="realsense_link"/>
+  <link name="dalsa_optical_frame"/>
+  <!----------------------------------------------------- Joint Definitions/Static TFs ------------------------------------------------------------->
+
+  <!-- https://www.youtube.com/watch?v=g9WHxOpAUns&t=10m7s | https://mymodelrobot.appspot.com/5629499534213120-->
+  <!-- http://wiki.ros.org/urdf/Tutorials/Building%20a%20Movable%20Robot%20Model%20with%20URDF -->
+  <joint name="base_to_arm" type="revolute">
+    <parent link="bobcat_base"/>
+    <child link="arms_link"/>
+    <origin xyz="-1.174615 0 1.413525" rpy="0 0 0"/>
+    <!--nunca mexer-->
+    <axis xyz="0 1 0"/>
+    <!--rotates around the y axis-->
+    <limit lower="-1.2" upper="0.0" effort="10" velocity="0.5"/>
+  </joint>
+
+  <joint name="base_to_back_bumper" type="fixed">
+    <parent link="bobcat_base"/>
+    <child link="back_bumper_link"/>
+    <origin rpy="0 0 -3.14159265359" xyz="-1.435 0 1.14"/>
+  </joint>
+
+  <joint name="back_bumper_to_back_lslidar" type="fixed">
+    <parent link="back_bumper_link"/>
+    <child link="back_lslidar"/>
+    <origin rpy="0 0.25 0" xyz="0 0 0.215"/>
+  </joint>
+
+  <joint name="base_to_back_box" type="fixed">
+    <parent link="bobcat_base"/>
+    <child link="back_box_link"/>
+    <origin rpy="0 0 -3.14159265359" xyz="-1.40 0 1.12"/>
+  </joint>
+
+  <joint name="base_to_sensor_box" type="fixed">
+    <parent link="bobcat_base"/>
+    <child link="sensor_box_link"/>
+    <origin rpy="0 0.48 0" xyz="0.4 0 2.2"/>
+    <!-- according to Miguel: 27.5-29 degrees (0.48-0.51 rads) in relation to the floor-->
+  </joint>
+
+  <joint name="base_to_sensing_kit" type="fixed">
+    <parent link="bobcat_base"/>
+    <child link="base_sensing_kit"/>
+    <origin rpy="0 0 0" xyz="0.5275 0.001 2.368"/>
+  </joint>
+
+  <joint name="base_sensing_kit_to_dalsa" type="fixed">
+    <parent link="base_sensing_kit"/>
+    <child link="dalsa_link"/>
+    <origin rpy="0 0.3 0" xyz="0.137 0 -0.055"/>
+    <!--original sensor kit: 0.13 0 -0.055 -->
+  </joint>
+
+  <joint name="base_sensing_kit_to_flir_ax8" type="fixed">
+    <parent link="base_sensing_kit"/>
+    <child link="flir_ax8_link"/>
+    <origin rpy="0 0.3 0" xyz="0.162 0 -0.12"/>
+    <!--original sensor kit: 0.16 0 -0.12 -->
+  </joint>
+
+  <joint name="base_sensing_kit_to_realsense" type="fixed">
+    <parent link="base_sensing_kit"/>
+    <child link="realsense_link"/>
+    <origin rpy="0 1.15 0" xyz="0.153 0 -0.15"/>
+    <!--original sensor kit: 0.16 0 -0.21 -->
+  </joint>
+
+  <joint name="base_sensing_kit_to_front_lslidar" type="fixed">
+    <parent link="base_sensing_kit"/>
+    <child link="front_lslidar"/>
+    <origin rpy="0 0.52 0" xyz="0 0 0.051"/>
+    <!--NEW: the front lidar is now tilted 30º (0.52 rad)-->
+  </joint>
+
+  <joint name="dalsa_to_dalsa_optical_frame" type="fixed">
+    <parent link="dalsa_link"/>
+    <child link="dalsa_optical_frame"/>
+    <origin rpy="-1.57079 0 -1.57079" xyz="0 0 0"/>     
+  </joint>
+
+</robot>

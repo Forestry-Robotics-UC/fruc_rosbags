@@ -1,0 +1,52 @@
+<launch>
+	<!-- Start sim time for rosbags -->
+	<param name="use_sim_time" value="true"/>
+
+	<!-- Start rosbags -->
+	<node pkg="rosbag" type="play" name="play_bags" output="screen" 
+	args="--clock -r 5 --skip-empty=5.0
+	$(find fruc_rosbags)/rosbags/setepontes_2020-11-27-14-17-14_0.bag
+	$(find fruc_rosbags)/rosbags/setepontes_2020-11-27-14-47-21_1.bag
+	$(find fruc_rosbags)/rosbags/setepontes_2020-11-27-15-02-21_2.bag
+	$(find fruc_rosbags)/rosbags/setepontes_2020-11-27-15-17-21_3.bag
+	$(find fruc_rosbags)/rosbags/setepontes_2020-11-27-15-50-38_0.bag
+	$(find fruc_rosbags)/rosbags/setepontes_2020-11-27-16-05-39_1.bag
+	$(find fruc_rosbags)/rosbags/setepontes_2020-11-27-16-20-39_2.bag
+	$(find fruc_rosbags)/rosbags/setepontes_2020-11-27-16-35-39_3.bag
+	$(find fruc_rosbags)/rosbags/setepontes_2020-11-27-16-50-38_4.bag
+	$(find fruc_rosbags)/rosbags/setepontes_2020-11-27-17-05-38_5.bag
+	"/>
+	
+	 <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find fruc_rosbags)/urdf/d435_camera.urdf.xacro' use_nominal_extrinsics:=true"/>
+
+ 	<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+	<!-- Compressed to image raw for pointcloud -->
+	<node pkg="nodelet" type="nodelet" args="manager" name="standalone_nodelet" output="screen"/>
+	<node pkg="image_transport" 
+		  type="republish" 
+		  name="realsense_rgb" 
+		  args="compressed in:=/realsense/rgb
+		  		raw out:=/realsense/rgb/image_raw"/> 
+	<node pkg="image_transport" 
+		  type="republish" 
+		  name="realsense_depth" 
+		  args="compressedDepth in:=/realsense/depth_compressed/
+		        raw out:=/realsense/depth/image_rect_raw"/> 
+
+	<!-- Convert to point cloud -->
+	<node pkg="nodelet" type="nodelet" name="depth_image_proc" args="load depth_image_proc/point_cloud_xyzrgb standalone_nodelet --no-bond" output="screen">
+		<!-- Input: Camera calibration and metadata.  (sensor_msgs/CameraInfo) -->
+		<remap from="rgb/camera_info" to="/realsense/camera_info"/>
+		<!-- Input: Rectified color image. (sensor_msgs/Image) -->
+		<remap from="rgb/image_rect_color" to="/realsense/rgb/image_raw"/>
+		<!-- Input: Rectified depth image, registered to the RGB camera. (sensor_msgs/Image) -->
+		<remap from="depth_registered/image_rect" to="/realsense/depth/image_rect_raw"/>
+		<!-- Output: XYZ point cloud. If using PCL, subscribe as PointCloud<PointXYZ>.  (sensor_msgs/PointCloud2)  -->
+		<remap from="depth_registered/points" to="/camera/points"/>
+	</node>
+
+	<!-- Open custom rviz -->
+	<node name="rviz" pkg="rviz" type="rviz" respawn="false"
+	    args="-d $(find fruc_rosbags)/rviz/2020_sete_fontes_forest.rviz"/>
+
+</launch>

@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+	<arg   name="model"             default="$(find fruc_rosbags)/urdf/semfire_bobcat.urdf"/>
+	<param name="robot_description" textfile="$(arg model)" />
+	
+	<node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
+            <param name="publish_frequency" type="double" value="15.0"/>
+    </node>
+</launch>

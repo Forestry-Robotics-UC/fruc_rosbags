@@ -1,0 +1,14 @@
+<launch>
+    <!-- Publish the static TFs that we need (realsense and imu) -->
+    <node pkg="tf" type="static_transform_publisher" name="tf_static_realsense_link_to_depth" args="0 0 0 0 0 0 1 realsense_link realsense_depth_frame 10" />
+
+    <node pkg="tf" type="static_transform_publisher" name="tf_static_realsense_depth_to_optical" args="0 0 0 -0.5 0.5 -0.5 0.5 realsense_depth_frame realsense_depth_optical_frame 10" />
+
+    <node pkg="tf" type="static_transform_publisher" name="tf_static_realsense_link_to_aligned_frame" args="-0.001 0.015 0.0 0.004 -0.001 0.002 1.0 realsense_link realsense_aligned_depth_to_color_frame 10" />
+
+    <node pkg="tf" type="static_transform_publisher" name="tf_static_realsense_aligned_to_color_optical" args="0 0 0 -0.5 0.5 -0.5 0.5 realsense_aligned_depth_to_color_frame realsense_color_optical_frame 10" />
+
+    <node pkg="tf" type="static_transform_publisher" name="base_to_imu" args="0.15 0 2.2 0 -1.42640673352 0 /bobcat_base /imu_link 10" /> <!-- 1.71518592 -->
+
+    <node pkg="tf" type="static_transform_publisher" name="base_to_arm" args="-1.174615 0 1.413525 0 -0.1 0 /bobcat_base /arms_link 100" />
+</launch>
