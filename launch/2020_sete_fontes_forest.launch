@@ -4,7 +4,7 @@
 
 	<!-- Start rosbags -->
 	<node pkg="rosbag" type="play" name="play_bags" output="screen" 
-	args="--clock -r 5 --skip-empty=5.0
+	args="--clock --skip-empty=10.0
 	$(find fruc_rosbags)/rosbags/setepontes_2020-11-27-14-17-14_0.bag
 	$(find fruc_rosbags)/rosbags/setepontes_2020-11-27-14-47-21_1.bag
 	$(find fruc_rosbags)/rosbags/setepontes_2020-11-27-15-02-21_2.bag
@@ -17,7 +17,7 @@
 	$(find fruc_rosbags)/rosbags/setepontes_2020-11-27-17-05-38_5.bag
 	"/>
 	
-	 <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find fruc_rosbags)/urdf/d435_camera.urdf.xacro' use_nominal_extrinsics:=true"/>
+	<param name="robot_description" command="$(find xacro)/xacro --inorder '$(find fruc_rosbags)/urdf/d435_camera.urdf.xacro' use_nominal_extrinsics:=true"/>
 
  	<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
 	<!-- Compressed to image raw for pointcloud -->
