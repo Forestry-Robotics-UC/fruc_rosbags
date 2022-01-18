@@ -7,7 +7,7 @@ This package includes custom roslaunch and rviz files to launch [zenodo's datase
 
 **Keywords:** rosbags, zenodo, semfire
 
-#### :floppy_disk: :floppy_disk: :floppy_disk: Save bags *as is* to the folder /fruc_rosbags/rosbags/ :floppy_disk: :floppy_disk: :floppy_disk:
+### :floppy_disk: :floppy_disk: :floppy_disk: Save bags from Zenodo *as is* to the folder /fruc_rosbags/rosbags/ :floppy_disk: :floppy_disk: :floppy_disk:
 
 ## Installation
 ### Dependencies
@@ -15,16 +15,19 @@ This package includes custom roslaunch and rviz files to launch [zenodo's datase
 - [Robot Operating System (ROS) Melodic](http://wiki.ros.org)
 
 ### ROS Dependencies
-Follow these steps to install all ROS dependecies 
+Follow these steps to install all ROS dependencies 
 ```
 # Create catkin space if it has not been created yet
 mkdir -p ~/catkin_ws/src 
 cd ~/catkin_ws/src/
 # Clone this repository and lslidar repository
-git clone https://bitbucket.org/davidbsp/lslidar_c16
+git clone git@github.com:Forestry-Robotics-UC/lslidar_c16.git
 git clone git@github.com:Forestry-Robotics-UC/fruc_rosbags.git
 # Install all missing dependencies 
 rosdep install --from-paths . --ignore-src -y -r
+# Start catkin workspace
+cd ~/catkin_ws
+catkin_make
 ```
 
 
