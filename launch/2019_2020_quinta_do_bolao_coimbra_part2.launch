@@ -2,12 +2,13 @@
 <launch>
 	<!-- GLOBAL TIME PARAM FOR ROSBAG PLAY  -->
 	<param name="use_sim_time" value="true" />
+	<arg   name="rate_factor"  default="1"/>
 
 	<!-- PLAY DATASET  -->
 	<node pkg="rosbag" type="play" name="rosbag_play" output="screen"
-		  args="--clock --skip-empty=2.0 
-		  $(find fruc_rosbags)/rosbags/2019_11_15_semfire.bag 
-		  $(find fruc_rosbags)/rosbags/_2020-02-19-17-29-13.bag
+		  args="--clock --skip-empty=2.0 -r $(arg rate_factor)
+		  $(find fruc_rosbags)/rosbags/2019_2020_quinta_do_bolao_coimbra_01.bag 
+		  $(find fruc_rosbags)/rosbags/2019_2020_quinta_do_bolao_coimbra_02.bag
 		  "/>
 
 	<!-- GET THE LIDAR DATA INTO A FORMAT THAT RVIZ CAN SEE IT (POINTCLOUD)  -->

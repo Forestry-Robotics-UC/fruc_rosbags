@@ -1,20 +1,20 @@
 <launch>
 	<!-- Start sim time for rosbags -->
 	<param name="use_sim_time" value="true"/>
-
+	<arg   name="rate_factor"  default="1"/>
 	<!-- Start rosbags -->
 	<node pkg="rosbag" type="play" name="play_bags" output="screen" 
-	args="--clock --skip-empty=10.0
-	$(find fruc_rosbags)/rosbags/setepontes_2020-11-27-14-17-14_0.bag
-	$(find fruc_rosbags)/rosbags/setepontes_2020-11-27-14-47-21_1.bag
-	$(find fruc_rosbags)/rosbags/setepontes_2020-11-27-15-02-21_2.bag
-	$(find fruc_rosbags)/rosbags/setepontes_2020-11-27-15-17-21_3.bag
-	$(find fruc_rosbags)/rosbags/setepontes_2020-11-27-15-50-38_0.bag
-	$(find fruc_rosbags)/rosbags/setepontes_2020-11-27-16-05-39_1.bag
-	$(find fruc_rosbags)/rosbags/setepontes_2020-11-27-16-20-39_2.bag
-	$(find fruc_rosbags)/rosbags/setepontes_2020-11-27-16-35-39_3.bag
-	$(find fruc_rosbags)/rosbags/setepontes_2020-11-27-16-50-38_4.bag
-	$(find fruc_rosbags)/rosbags/setepontes_2020-11-27-17-05-38_5.bag
+	args="--clock --skip-empty=10.0 -r $(arg rate_factor)
+	$(find fruc_rosbags)/rosbags/2020_sete_fontes_forest_00.bag
+	$(find fruc_rosbags)/rosbags/2020_sete_fontes_forest_01.bag
+	$(find fruc_rosbags)/rosbags/2020_sete_fontes_forest_02.bag
+	$(find fruc_rosbags)/rosbags/2020_sete_fontes_forest_03.bag
+	$(find fruc_rosbags)/rosbags/2020_sete_fontes_forest_04.bag
+	$(find fruc_rosbags)/rosbags/2020_sete_fontes_forest_05.bag
+	$(find fruc_rosbags)/rosbags/2020_sete_fontes_forest_06.bag
+	$(find fruc_rosbags)/rosbags/2020_sete_fontes_forest_07.bag
+	$(find fruc_rosbags)/rosbags/2020_sete_fontes_forest_08.bag
+	$(find fruc_rosbags)/rosbags/2020_sete_fontes_forest_09.bag
 	"/>
 	
 	<param name="robot_description" command="$(find xacro)/xacro --inorder '$(find fruc_rosbags)/urdf/d435_camera.urdf.xacro' use_nominal_extrinsics:=true"/>
